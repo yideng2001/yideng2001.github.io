@@ -184,6 +184,13 @@
 
               <time title="创建时间：2020-05-05 15:40:11" itemprop="dateCreated datePublished" datetime="2020-05-05T15:40:11+08:00">2020-05-05</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-05-14 19:45:57" itemprop="dateModified" datetime="2020-05-14T19:45:57+08:00">2020-05-14</time>
+              </span>
 
           
 
@@ -196,7 +203,39 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          
+          <p>import requests<br>from lxml import etree</p>
+<p>class ListSpider(object):<br>    def <strong>init</strong>(self):<br>        self.TOTAL_PAGE = 10<br>        self.BASE_URL = “<a href="http://quotes.toscrape.com&quot;" target="_blank" rel="noopener">http://quotes.toscrape.com&quot;</a><br>        self.headers = {<br>            “User-Agent”: “Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36”<br>        }</p>
+<pre><code>def crawl(self, index=1):
+    url = self.BASE_URL + f&quot;/page/{index}/&quot;
+    r = requests.get(url=url, headers=self.headers)
+    # with open(&quot;quotes.html&quot;, &quot;w&quot;, encoding=&quot;utf8&quot;) as file:
+    #     file.write(r.content.decode(&quot;utf8&quot;))
+    return r.content.decode(&quot;utf8&quot;)
+
+@staticmethod
+def parser(html):
+    # with open(&quot;quotes.html&quot;, &quot;r&quot;, encoding=&quot;utf8&quot;) as file:
+    #     html = file.read()
+    element = etree.HTML(html)
+    saying = element.xpath(&quot;//div[@class=&apos;quote&apos;]/span[@class=&apos;text&apos;]/text()&quot;)
+    author = element.xpath(&quot;//div[@class=&apos;quote&apos;]/span[2]/small/text()&quot;)
+    tags = element.xpath(&quot;//div[@class=&apos;tags&apos;]/a[@href]/text()&quot;)
+    for i in range(len(saying)):
+        message = {
+            &quot;名言&quot;: saying[i],
+            &quot;作者&quot;: author[i],
+            &quot;标签&quot;: tags,
+            &quot;status&quot;: 0
+        }
+        print(message)
+
+def run(self):
+    #         for i in range(self.TOTAL_PAGE):
+    #             self.crawl(i)
+    #             break
+    html = self.crawl()
+    self.parser(html)</code></pre><p>if <strong>name</strong> == ‘<strong>main</strong>‘:<br>    spider = ListSpider()<br>    spider.run()</p>
+
       
     </div>
 
